@@ -100,5 +100,41 @@
             return $results;
         }
     }
+
+    class ValidationFunctions {
+
+        // Function to validate book name ex John, John Doe
+        static function validate_book($value) {
+            $value = trim($value);
+
+            if (preg_match('/[a-zA-Z]+( [A-Za-z\d]+)?/', $value)) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    
+        static function validate_numbers($value) {
+            $value = trim($value);
+    
+            if (preg_match('/^[\d]+$/', $value)) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    
+        // validate price 
+        static function validate_price($value) {
+            $value = trim($value);
+    
+            if (preg_match('/^([1-9][\d]{1}|[\d]{1,3})(\.[\d]{1,2})?$/', $value)) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    
+    }
 ?>
 
