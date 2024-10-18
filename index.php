@@ -97,6 +97,10 @@
                 $errors['book_price'] = "book Price must be between 100 and 999,999.99.";
             }
 
+            if (empty($book_genre)) {
+                $errors['book_genre'] = 'Please select a book genre.';
+            }
+
             if (!empty($errors)) {
                 // If there are errors save it session
                 $_SESSION['errors'] = $errors;
@@ -105,72 +109,24 @@
                 // If there are no errors then unset the session
                 unset($_SESSION['errors']);
                 unset($_SESSION['form_data']);
-
-                $book_id = prepare_string($dbc, $book_id);
-                $book_name = prepare_string($dbc, $book_name);
-                $book_desc = prepare_string($dbc, $book_desc);
-                $book_quantity = prepare_string($dbc, $book_quantity);
-                $book_added = prepare_string($dbc, $book_added);
-                $book_price = prepare_string($dbc, $book_price);
-                $book_fuel = prepare_string($dbc, $book_fuel);
-                $book_drive = prepare_string($dbc, $book_drive);
-
+                
                 $result = null;
 
                 // If book_id is empty it means that we are inserting into the table
                 if (empty($book_id)) {
-                    // $query = "INSERT INTO `books`(`bookName`, `bookDescription`, `quantityAvailable`, `price`, `fuelType`, `driveType`, `addedBy`) 
-                    //             VALUES ('$book_name', '$book_desc', '$book_quantity', '$book_price', '$book_fuel', '$book_drive', '$book_added')";
-
-                    $query = "INSERT INTO `books`(`bookName`, `bookDescription`, `quantityAvailable`, `price`, `fuelType`, `driveType`, `addedBy`) 
-                                 VALUES (?, ?, ?, ?, ?, ?, ?)";
-
-                    $stmt = mysqli_prepare($dbc, $query);
-
-                    mysqli_stmt_bind_param(
-                        $stmt,
-                        'ssidsss',
-                        $book_name,
-                        $book_desc,
-                        $book_quantity,
-                        $book_price,
-                        $book_fuel,
-                        $book_drive,
-                        $book_added
-                    );
-
-                    // insert in database 
-                    $result = mysqli_stmt_execute($stmt);
+                    $result = $connection->register_book($book_name, $book_desc, $book_quantity, 
+                                $book_price, $book_genre); 
                 } else {
 
-                    $query = "UPDATE `books`
-                                SET `bookName` = ?, `bookDescription` = ?, 
-                                    `quantityAvailable` = ?, `price` = ?, 
-                                    `fuelType` = ?, `driveType` = ?
-                                WHERE `bookID` = ?";
-                    
-                    $stmt = mysqli_prepare($dbc, $query);
-
-                    mysqli_stmt_bind_param(
-                        $stmt,
-                        'ssidssi',
-                        $book_name,
-                        $book_desc,
-                        $book_quantity,
-                        $book_price,
-                        $book_fuel,
-                        $book_drive,
-                        $book_id
-                    );
-
-                    $result = mysqli_stmt_execute($stmt);
+                    $result = $connection->update_car($book_id, $book_name, $book_desc, $book_quantity
+                                $book_price, $book_genre);
                 }
 
                 // If successfull then refresh the page to show new data.
                 if ($result) {
                     header('Location: index.php');
                 } else {
-                    echo "Something went wrong. Inserting or Updateing bookdata failed.";
+                    echo "Something went wrong. Inserting or Updateing book data failed.";
                 }
 
             }
@@ -178,11 +134,9 @@
         }
 
         // This block will be run to delete data from the table
-        if (!empty($_GET['delete_cid'])) {
-            $book_to_delete = $_GET['delete_cid'];
-            $query = "delete from books where `bookID` = $book_to_delete";
-
-            $result = mysqli_query($dbc, $query);
+        if (!empty($_GET['delete_bid'])) {
+            $book_to_delete = $_GET['delete_bid'];
+            $result = $connection->delete_car($book_to_delete);
 
             // Refresh the page if successfull.
             if ($result) {
