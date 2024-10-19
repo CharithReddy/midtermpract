@@ -56,17 +56,18 @@
         }
 
         function update_book($book_id, $book_name, $book_desc, $book_quantity, 
-            $book_price) {
+            $book_price, $book_genre) {
 
             $book_id = $this->prepare_string($book_id);
             $book_name = $this->prepare_string($book_name);
             $book_desc = $this->prepare_string($book_desc);
             $book_price = $this->prepare_string($book_price);
+            $book_genre = $this->prepare_string($book_genre);
 
             $query = "UPDATE `books`
                         SET `bookName` = ?, `bookDescription` = ?, 
                             `stock` = ?, `price` = ?, 
-                            `genre` = ?,
+                            `genre` = ?
                         WHERE `bookID` = ?";
 
             $stmt = mysqli_prepare($this->dbc, $query);
@@ -77,6 +78,7 @@
                 $book_desc,
                 $book_quantity,
                 $book_price,
+                $book_genre,
                 $book_id
             );
 
