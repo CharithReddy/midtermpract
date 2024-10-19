@@ -1,0 +1,96 @@
+.table tr th,
+.table tr td {
+    text-align : center;
+    vertical-align: middle;
+}
+
+.text-align-center {
+    text-align: center;
+}
+
+.table tr td button {
+    border : none;
+    background : none;
+    cursor : pointer;
+}
+
+.table tr td:nth-of-type(2) {
+    text-align : left;
+    text-indent : 50px;
+}
+
+.table tr td:nth-of-type(2) {
+    width: 30%;
+}
+
+.table tr td:last-of-type {
+    width: 10%;
+}
+
+.table-container {
+    width: 90%;
+    margin : auto;
+}
+
+.invalidval {
+    border : 1px solid red;
+}
+
+.errortext {
+    color : red;
+}
+
+.success-page {
+    background-color: antiquewhite;
+}
+
+.flexrow {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.flexcol {
+    display : flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;   
+    position: absolute;
+    background-color: wheat;
+    top: calc(50% - 150px);
+    left: calc(50% - 150px);
+    width: 300px;
+    height: 300px;
+    border-radius: 50px;
+    z-index: 10;
+}
+
+.btn-row {
+    text-align: center;
+    display: flex;
+    padding: 25px ;
+    justify-content: space-evenly;
+}
+
+.submitbtn {
+    width: 25%;
+}
+
+.hidden {
+    display: none;
+}
+
+.dont {
+    /* display: none; */
+    color: blue;
+}
+
+#show-book-data,
+#add-edit-book-data,
+#delete-book-data {
+    border: 1px solid black;
+    padding: 10px;
+    border-radius: 10px;
+    margin: 10px auto;
+}
+

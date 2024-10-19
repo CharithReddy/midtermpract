@@ -23,38 +23,6 @@
 
     <?php
 
-        // Function to validate book name ex "Honda", "BMW X8" 
-        // function validate_book($value) {
-        //     $value = trim($value);
-
-        //     if (preg_match('/[a-zA-Z]+( [A-Za-z\d]+)?/', $value)) {
-        //         return true;
-        //     } else {
-        //         return false;
-        //     }
-        // }
-
-        // function validate_numbers($value) {
-        //     $value = trim($value);
-
-        //     if (preg_match('/^[\d]+$/', $value)) {
-        //         return true;
-        //     } else {
-        //         return false;
-        //     }
-        // }
-
-        // validate price is between 100 and 999999.99
-        // function validate_price($value) {
-        //     $value = trim($value);
-
-        //     if (preg_match('/^([1-9][\d]{2}|[\d]{4,6})(\.[\d]{1,2})?$/', $value)) {
-        //         return true;
-        //     } else {
-        //         return false;
-        //     }
-        // }
-
         // Do not do the validation if the page is loaded first
         // validation is done only if submit button is clicked
         if (!empty($_POST)) {
@@ -65,7 +33,7 @@
             $book_desc = $_POST['cDesc'];
             $book_quantity = $_POST['cQuantity'];
             $book_price = $_POST['cPrice'];
-            $book_fuel = $_POST['cFuel'];
+            $book_genre = $_POST['cGenre'];
 
             // Define an errors array
             $errors = [];
@@ -94,7 +62,7 @@
                 $errors['book_price'] = "book Price cannot be empty";
             } 
             else if (!ValidationFunctions::validate_price($book_price)){
-                $errors['book_price'] = "book Price must be between 100 and 999,999.99.";
+                $errors['book_price'] = "book Price must be between 100 and 999.99.";
             }
 
             if (empty($book_genre)) {
@@ -118,7 +86,7 @@
                                 $book_price, $book_genre); 
                 } else {
 
-                    $result = $connection->update_car($book_id, $book_name, $book_desc, $book_quantity
+                    $result = $connection->update_book($book_id, $book_name, $book_desc, $book_quantity,
                                 $book_price, $book_genre);
                 }
 
@@ -134,9 +102,9 @@
         }
 
         // This block will be run to delete data from the table
-        if (!empty($_GET['delete_bid'])) {
-            $book_to_delete = $_GET['delete_bid'];
-            $result = $connection->delete_car($book_to_delete);
+        if (!empty($_GET['delete_cid'])) {
+            $book_to_delete = $_GET['delete_cid'];
+            $result = $connection->delete_book($book_to_delete);
 
             // Refresh the page if successfull.
             if ($result) {
@@ -169,10 +137,8 @@
                         <th scope="col">Name</th>
                         <th scope="col">Description</th>
                         <th scope="col">Price</th>
-                        <th scope="col">Fuel Type</th>
-                        <th scope="col">Drive Type</th>
-                        <th scope="col">Quantity</th>
-                        <th scope="col">Added by</th>
+                        <th scope="col">Genre</th>
+                        <th scope="col">Stock</th>
                         <th scope="col">Edit/Delete</th>
                     </tr>
                 </thead>
@@ -188,10 +154,8 @@
                             $str_to_print .= "<td id=\"cname-{$row['bookID']}\">{$row['bookName']}</td>";
                             $str_to_print .= "<td id=\"cdesc-{$row['bookID']}\">{$row['bookDescription']}</td>";
                             $str_to_print .= "<td id=\"cprice-{$row['bookID']}\">{$row['price']}</td>";
-                            $str_to_print .= "<td id=\"cfuel-{$row['bookID']}\">{$row['fuelType']}</td>";
-                            $str_to_print .= "<td id=\"cdrive-{$row['bookID']}\">{$row['driveType']}</td>";
-                            $str_to_print .= "<td id=\"cquantity-{$row['bookID']}\">{$row['quantityAvailable']}</td>";
-                            $str_to_print .= "<td>{$row['addedBy']}</td>";
+                            $str_to_print .= "<td id=\"cgenre-{$row['bookID']}\">{$row['genre']}</td>";
+                            $str_to_print .= "<td id=\"cstock-{$row['bookID']}\">{$row['stock']}</td>";
                             $str_to_print .= "<td>
                                                 <a href=\"#add-edit-book-data\"><button id=\"edit-book-{$row['bookID']}\" class=\"edit-book\"><i class=\"fa-regular fa-pen-to-square fa-2x\"></i></button></a> 
                                                     |
@@ -260,43 +224,23 @@
                 </p>
 
                 <p> 
-                    <label for="cFuel">book Fuel:  </label>
-                    <select name="cFuel" id="cFuel"
-                        class="form-select <?= isset($errors['book_fuel']) ? "invalidval" : "" ?>">
+                    <label for="cGenre">book Genre:  </label>
+                    <select name="cGenre" id="cGenre"
+                        class="form-select <?= isset($errors['book_genre']) ? "invalidval" : "" ?>">
                         <option value=""
-                            <?= isset($form_data['cFuel']) && $form_data['cFuel'] == "" ? "selected" : "" ?>>
+                            <?= isset($form_data['cGenre']) && $form_data['cGenre'] == "" ? "selected" : "" ?>>
                             Select One</option>
-                        <option value="Gas"
-                            <?= isset($form_data['cFuel']) && $form_data['cFuel'] == "Gas" ? "selected" : "" ?>>
-                            Gas</option>
-                        <option value="Electric"
-                            <?= isset($form_data['cFuel']) && $form_data['cFuel'] == "Electric" ? "selected" : "" ?>>
-                            Electric</option>
-                        <option value="Hybrid"
-                            <?= isset($form_data['cFuel']) && $form_data['cFuel'] == "Hybrid" ? "selected" : "" ?>>
-                            Hybrid</option>
+                        <option value="Sci-Fi"
+                            <?= isset($form_data['cGenre']) && $form_data['cGenre'] == "Sci-Fi" ? "selected" : "" ?>>
+                            Sci-Fi</option>
+                        <option value="Fiction"
+                            <?= isset($form_data['cGenre']) && $form_data['cGenre'] == "Fiction" ? "selected" : "" ?>>
+                            Fiction</option>
+                        <option value="Adventure"
+                            <?= isset($form_data['cGenre']) && $form_data['cGenre'] == "Adventure" ? "selected" : "" ?>>
+                            Adventure</option>
                     </select>
-                    <span class="errortext"><?= isset($errors['book_fuel']) ? $errors['book_fuel'] : "" ?></span>
-                </p>
-
-                <p> 
-                    <label for="cDrive">book Drive Type:  </label>
-                    <select name="cDrive" id="cDrive"
-                        class="form-select <?= isset($errors['book_drive']) ? "invalidval" : "" ?>">
-                        <option value=""
-                            <?= isset($form_data['cDrive']) && $form_data['cDrive'] == "" ? "selected" : "" ?>>
-                            Select One</option>
-                        <option value="AWD"
-                            <?= isset($form_data['cDrive']) && $form_data['cDrive'] == "AWD" ? "selected" : "" ?>>
-                            AWD</option>
-                        <option value="RWD"
-                            <?= isset($form_data['cDrive']) && $form_data['cDrive'] == "RWD" ? "selected" : "" ?>>
-                            RWD</option>
-                        <option value="FWD"
-                            <?= isset($form_data['cDrive']) && $form_data['cDrive'] == "FWD" ? "selected" : "" ?>>
-                            FWD</option>
-                    </select>
-                    <span class="errortext"><?= isset($errors['book_drive']) ? $errors['book_drive'] : "" ?></span>
+                    <span class="errortext"><?= isset($errors['book_genre']) ? $errors['book_genre'] : "" ?></span>
                 </p>
 
                 <p class="btn-row">
